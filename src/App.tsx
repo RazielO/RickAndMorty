@@ -1,35 +1,26 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
+import { type Character, getCharacters } from "rickmortyapi";
+import { CharacterList } from "./components/characters/CharacterList";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [characters, setCharacters] = useState<Character[]>([]);
+
+  useEffect(() => {
+    const getData = async () => {
+      const charactersRequest = await getCharacters({page: 1});
+      const data = charactersRequest.data.results;
+      setCharacters(data ? data : []);
+    };
+
+    getData();
+  });
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <h1 className="mb-4 text-6xl text-gray-100 bold text-center">Rick & Morty</h1>
+      <CharacterList characters={characters} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
