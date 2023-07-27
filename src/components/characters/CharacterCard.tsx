@@ -30,7 +30,7 @@ export const CharacterCard = (props: { character: Character }) => {
 
       <div className="m-2 flex flex-col text-slate-200 text-xl justify-around">
         <h1 className="font-bold text-3xl mb-2">{character.name}</h1>
-        <span>
+        <span className="flex items-center gap-1">
           <b>Status: </b> <StatusIcon status={character.status} />{" "}
           {character.status}
         </span>
