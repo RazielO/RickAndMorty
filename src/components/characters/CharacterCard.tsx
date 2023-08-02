@@ -18,14 +18,14 @@ export const CharacterCard = (props: { character: Character }) => {
 
   return (
     <motion.div
-      className="flex flex-col md:flex-row md:h-56 bg-zinc-800 rounded-xl drop-shadow-lg hover:bg-gray-800"
+      className="flex flex-col md:flex-row md:h-56 bg-zinc-800 rounded-xl drop-shadow-lg hover:bg-gray-800 md:h-full"
       whileHover={{ scale: 1.05 }}
       transition={{ type: "spring", stiffness: 400, damping: 20 }}
     >
       <img
         src={character.image}
         alt={character.name}
-        className="h-full object-cover rounded-t-xl md:rounded-l-xl md:rounded-tr-none"
+        className="h-full object-cover rounded-t-xl md:rounded-l-xl md:rounded-tr-none md:max-w-[33%]"
       />
 
       <div className="m-2 flex flex-col text-slate-200 text-xl justify-around">
@@ -35,8 +35,17 @@ export const CharacterCard = (props: { character: Character }) => {
           {character.status}
         </span>
         <span>
-          <b>Species: </b> {character.species}
+          <b>Species: </b>{" "}
+          {character.gender !== "unknown" ? character.gender : ""}{" "}
+          {character.species}
         </span>
+        {character.type ? (
+          <span>
+            <b>Type or subspecies: </b> {character.type}
+          </span>
+        ) : (
+          ""
+        )}
         <span>
           <b>From: </b> {character.origin.name}
         </span>
