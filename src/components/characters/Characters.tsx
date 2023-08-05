@@ -6,7 +6,6 @@ import { CharacterList } from "../characters/CharacterList";
 
 export const Characters = () => {
   const [characters, setCharacters] = useState<Character[]>([]);
-  const [page, setPage] = useState<number>(1);
 
   const [filterName, setFilterName] = useState<string>("");
   const [filterSpecies, setFilterSpecies] = useState<string>("");
@@ -36,7 +35,6 @@ export const Characters = () => {
 
   const handlePageChange = (event: { selected: number }) => {
     nextPage = event.selected + 1;
-    setPage(nextPage);
     window.scrollTo({ top: 0, behavior: "smooth" });
     getData();
   };
@@ -52,7 +50,7 @@ export const Characters = () => {
     filter["type"] = filterType;
 
     setFilter(filter);
-    setPage(1);
+    nextPage = 1;
     getData();
   };
 
@@ -64,7 +62,7 @@ export const Characters = () => {
     setFilterGender("");
 
     setFilter({});
-    setPage(1);
+    nextPage = 1;
     getData();
   };
 
