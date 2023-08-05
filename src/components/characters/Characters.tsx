@@ -17,8 +17,13 @@ export const Characters = () => {
 
   const [pageCount, setPageCount] = useState<number>(42);
 
+  let nextPage = 1;
+
   const getData = async () => {
-    const charactersRequest = await getCharacters({ ...filter, page });
+    const charactersRequest = await getCharacters({
+      ...filter,
+      page: nextPage,
+    });
     const data = charactersRequest.data.results;
     const count = charactersRequest.data.info?.pages;
     setPageCount(count ? count : 1);
@@ -30,9 +35,10 @@ export const Characters = () => {
   }, []);
 
   const handlePageChange = (event: { selected: number }) => {
-    setPage(event.selected + 1);
-    getData();
+    nextPage = event.selected + 1;
+    setPage(nextPage);
     window.scrollTo({ top: 0, behavior: "smooth" });
+    getData();
   };
 
   const handleFilter = (event: React.FormEvent) => {
