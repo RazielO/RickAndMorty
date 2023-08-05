@@ -1,11 +1,9 @@
 import { CharacterInfo } from "./components/characters/CharacterInfo";
-import { CharacterNotFound } from "./components/characters/CharacterNotFound";
 import { Characters } from "./components/characters/Characters";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { LocationInfo } from "./components/locations/LocationInfo";
-import { LocationNotFound } from "./components/locations/LocationNotFound";
 import { EpisodeInfo } from "./components/episodes/EpisodeInfo";
-import { EpisodeNotFound } from "./components/episodes/EpisodeNotFound";
+import { ItemNotFound } from "./components/ItemNotFound";
 
 function App() {
   const router = createBrowserRouter([
@@ -16,17 +14,17 @@ function App() {
     {
       path: "/character/:characterId",
       element: <CharacterInfo />,
-      errorElement: <CharacterNotFound />,
+      errorElement: <ItemNotFound type="character" />,
     },
     {
       path: "/location/:locationId",
       element: <LocationInfo />,
-      errorElement: <LocationNotFound />,
+      errorElement: <ItemNotFound type="location" />,
     },
     {
       path: "/episode/:episodeId",
       element: <EpisodeInfo />,
-      errorElement: <EpisodeNotFound />,
+      errorElement: <ItemNotFound type="episode" />,
     },
   ]);
 
