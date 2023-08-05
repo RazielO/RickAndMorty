@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   getCharacter,
   type Character,
@@ -9,12 +9,13 @@ import {
 import { StatusIcon } from "./StatusIcon";
 import cn from "classnames";
 import { IoMdArrowBack } from "react-icons/io";
+import { StatusImage } from "./StatusImage";
 
 export const CharacterInfo = () => {
   const params = useParams();
+  const navigate = useNavigate();
   const [character, setCharacter] = useState<Character>();
   const [episodes, setEpisodes] = useState<Episode[]>([]);
-  const [shadowColor, setShadowColor] = useState<string>("");
 
   const requestCharacter = async () => {
     const id = params.characterId ? params.characterId : "1";
@@ -22,20 +23,6 @@ export const CharacterInfo = () => {
     const request = await getCharacter(Number.parseInt(id));
     const character = request.data;
     setCharacter(character);
-
-    console.log(character);
-
-    switch (character.status) {
-      case "Alive":
-        setShadowColor("#22c55e");
-        break;
-      case "Dead":
-        setShadowColor("#ef4444");
-        break;
-      default:
-        setShadowColor("#facc15");
-        break;
-    }
 
     const episodeNumbers = character.episode.map((x) =>
       Number.parseInt(x.split("/")[5])
@@ -56,31 +43,27 @@ export const CharacterInfo = () => {
 
   return (
     <div className="my-4 mx-8">
-      <div className="flex justify-between items-center">
-        <a href="/" className="text-gray-100 text-2xl flex items-center">
+      <div className="grid grid-cols-3 justify-between items-center">
+        <Link
+          to={".."}
+          onClick={(e) => {
+            e.preventDefault();
+            navigate(-1);
+          }}
+          className="text-gray-100 text-2xl flex items-center"
+        >
           <IoMdArrowBack /> Back
-        </a>
+        </Link>
         <h2 className="mb-4 text-center text-4xl text-gray-100 bold">
           {character?.name}
         </h2>
-        <span></span>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-8">
-        <img
+        <StatusImage
           src={character?.image}
           alt={character?.name}
-          className={cn(
-            character?.status === "Alive"
-              ? "ring-green-500"
-              : character?.status === "Dead"
-              ? "ring-red-500"
-              : "ring-yellow-500",
-            "h-full aspect-square object-cover rounded-full sm:max-w-[33%] sm:rounded-full drop-shadow-xl"
-          )}
-          style={{
-            boxShadow: `0 4px 8px 0 ${shadowColor}, 0 -4px 20px 0 ${shadowColor}`,
-          }}
+          status={character?.status}
         />
 
         <div className="flex flex-col text-gray-100 text-2xl justify-center gap-2">

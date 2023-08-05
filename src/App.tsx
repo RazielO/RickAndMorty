@@ -1,7 +1,9 @@
 import { CharacterInfo } from "./components/characters/CharacterInfo";
 import { CharacterNotFound } from "./components/characters/CharacterNotFound";
 import { Characters } from "./components/characters/Characters";
-import { createBrowserRouter, Link, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { LocationInfo } from "./components/locations/LocationInfo";
+import { LocationNotFound } from "./components/locations/LocationNotFound";
 
 function App() {
   const router = createBrowserRouter([
@@ -12,7 +14,12 @@ function App() {
     {
       path: "/character/:characterId",
       element: <CharacterInfo />,
-      errorElement: <CharacterNotFound />
+      errorElement: <CharacterNotFound />,
+    },
+    {
+      path: "/location/:locationId",
+      element: <LocationInfo />,
+      errorElement: <LocationNotFound />,
     },
   ]);
 
