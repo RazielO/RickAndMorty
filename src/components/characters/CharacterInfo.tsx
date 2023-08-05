@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import {
   getCharacter,
   type Character,
@@ -11,35 +10,34 @@ import cn from "classnames";
 import { IoMdArrowBack } from "react-icons/io";
 import { StatusImage } from "./StatusImage";
 
-export const CharacterInfo = () => {
-  const params = useParams();
-  const navigate = useNavigate();
-  const [character, setCharacter] = useState<Character>();
-  const [episodes, setEpisodes] = useState<Episode[]>([]);
+export const characterLoader = async ({
+  params,
+}: any): Promise<{ character: Character; episodes: Episode[] }> => {
+  const id = params.characterId ? params.characterId : "1";
 
-  const requestCharacter = async () => {
-    const id = params.characterId ? params.characterId : "1";
+  const request = await getCharacter(Number.parseInt(id));
+  const character = request.data;
 
-    const request = await getCharacter(Number.parseInt(id));
-    const character = request.data;
-    setCharacter(character);
+  const episodeNumbers = character.episode.map((x) =>
+    Number.parseInt(x.split("/")[5])
+  );
 
-    const episodeNumbers = character.episode.map((x) =>
-      Number.parseInt(x.split("/")[5])
-    );
+  const episodesRequest = await getEpisode(
+    episodeNumbers.length === 1
+      ? [episodeNumbers[0], episodeNumbers[0]]
+      : episodeNumbers
+  );
+  const episodeList = episodesRequest.data;
 
-    const episodesRequest = await getEpisode(
-      episodeNumbers.length === 1
-        ? [episodeNumbers[0], episodeNumbers[0]]
-        : episodeNumbers
-    );
-    const episodeList = episodesRequest.data;
-    setEpisodes(episodeList);
+  return {
+    character,
+    episodes: episodeList,
   };
+};
 
-  useEffect(() => {
-    requestCharacter();
-  }, []);
+export const CharacterInfo = () => {
+  const navigate = useNavigate();
+  const { character, episodes } = useLoaderData() as { character: Character, episodes: Episode[] };
 
   return (
     <div className="my-4 mx-8">
@@ -127,7 +125,7 @@ export const CharacterInfo = () => {
       </h3>
 
       <ol className="list-disc text-gray-100 text-xl">
-        {episodes.map((episode) => (
+        {episodes.map((episode: Episode) => (
           <li key={episode.episode}>
             <b>{episode.episode}</b>:{" "}
             <a

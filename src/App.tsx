@@ -1,8 +1,8 @@
-import { CharacterInfo } from "./components/characters/CharacterInfo";
+import { CharacterInfo, characterLoader } from "./components/characters/CharacterInfo";
 import { Characters } from "./components/characters/Characters";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { LocationInfo } from "./components/locations/LocationInfo";
-import { EpisodeInfo } from "./components/episodes/EpisodeInfo";
+import { LocationInfo, locationLoader } from "./components/locations/LocationInfo";
+import { EpisodeInfo, episodeLoader } from "./components/episodes/EpisodeInfo";
 import { ItemNotFound } from "./components/ItemNotFound";
 
 function App() {
@@ -15,16 +15,19 @@ function App() {
       path: "/character/:characterId",
       element: <CharacterInfo />,
       errorElement: <ItemNotFound type="character" />,
+      loader: characterLoader
     },
     {
       path: "/location/:locationId",
       element: <LocationInfo />,
       errorElement: <ItemNotFound type="location" />,
+      loader: locationLoader
     },
     {
       path: "/episode/:episodeId",
       element: <EpisodeInfo />,
       errorElement: <ItemNotFound type="episode" />,
+      loader: episodeLoader
     },
   ]);
 

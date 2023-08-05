@@ -1,42 +1,37 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import {
-  Character,
-  Episode,
-  getCharacter,
-  getEpisode,
-} from "rickmortyapi";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
+import { Character, Episode, getCharacter, getEpisode } from "rickmortyapi";
 import { IoMdArrowBack } from "react-icons/io";
 import { StatusImage } from "../characters/StatusImage";
 import { motion } from "framer-motion";
 
-export const EpisodeInfo = () => {
-  const params = useParams();
-  const navigate = useNavigate();
-  const [episode, setEpisode] = useState<Episode>();
-  const [characters, setCharacters] = useState<Character[]>([]);
+export const episodeLoader = async ({
+  params,
+}: any): Promise<{ episode: Episode; characters: Character[] }> => {
+  const id = params.episodeId ? params.episodeId : "1";
 
-  const requestEpisode = async () => {
-    const id = params.episodeId ? params.episodeId : "1";
+  const request = await getEpisode(Number.parseInt(id));
+  const episode = request.data;
 
-    const request = await getEpisode(Number.parseInt(id));
-    const episode = request.data;
-    setEpisode(episode);
+  const charactersIds = episode.characters.map((x) =>
+    Number.parseInt(x.split("/")[5])
+  );
 
-    const charactersIds = episode.characters.map((x) =>
-      Number.parseInt(x.split("/")[5])
-    );
+  const charactersRequest = await getCharacter(
+    charactersIds.length === 1
+      ? [charactersIds[0], charactersIds[0]]
+      : charactersIds
+  );
+  const charactersList = charactersRequest.data;
 
-    const charactersRequest = await getCharacter(
-      charactersIds.length === 1 ? [charactersIds[0], charactersIds[0]] : charactersIds
-    );
-    const charactersList = charactersRequest.data;
-    setCharacters(charactersList);
+  return {
+    episode,
+    characters: charactersList,
   };
+};
 
-  useEffect(() => {
-    requestEpisode();
-  }, []);
+export const EpisodeInfo = () => {
+  const navigate = useNavigate();
+  const { episode, characters } = useLoaderData() as { episode: Episode, characters: Character[]};
 
   return (
     <div className="my-4 mx-8">

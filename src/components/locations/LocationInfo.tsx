@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import {
   Character,
   getCharacter,
@@ -10,33 +9,35 @@ import { IoMdArrowBack } from "react-icons/io";
 import { StatusImage } from "../characters/StatusImage";
 import { motion } from "framer-motion";
 
-export const LocationInfo = () => {
-  const params = useParams();
-  const navigate = useNavigate();
-  const [location, setLocation] = useState<Location>();
-  const [characters, setCharacters] = useState<Character[]>([]);
+export const locationLoader = async ({
+  params,
+}: any): Promise<{ location: Location; characters: Character[] }> => {
+  const id = params.locationId ? params.locationId : "1";
 
-  const requestLocation = async () => {
-    const id = params.locationId ? params.locationId : "1";
+  const request = await getLocation(Number.parseInt(id));
+  const location = request.data;
 
-    const request = await getLocation(Number.parseInt(id));
-    const location = request.data;
-    setLocation(location);
+  const residentIds = location.residents.map((x) =>
+    Number.parseInt(x.split("/")[5])
+  );
 
-    const residentIds = location.residents.map((x) =>
-      Number.parseInt(x.split("/")[5])
-    );
+  const residentsRequest = await getCharacter(
+    residentIds.length === 1 ? [residentIds[0], residentIds[0]] : residentIds
+  );
+  const residentsList = residentsRequest.data;
 
-    const residentsRequest = await getCharacter(
-      residentIds.length === 1 ? [residentIds[0], residentIds[0]] : residentIds
-    );
-    const residentsList = residentsRequest.data;
-    setCharacters(residentsList);
+  return {
+    location,
+    characters: residentsList,
   };
+};
 
-  useEffect(() => {
-    requestLocation();
-  }, []);
+export const LocationInfo = () => {
+  const navigate = useNavigate();
+  const { location, characters } = useLoaderData() as {
+    location: Location;
+    characters: Character[];
+  };
 
   return (
     <div className="my-4 mx-8">
