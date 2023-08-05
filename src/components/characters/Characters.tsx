@@ -6,7 +6,7 @@ import { CharacterList } from "../characters/CharacterList";
 
 export const Characters = () => {
   const [characters, setCharacters] = useState<Character[]>([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState<number>(1);
 
   const [filterName, setFilterName] = useState<string>("");
   const [filterSpecies, setFilterSpecies] = useState<string>("");
@@ -27,7 +27,7 @@ export const Characters = () => {
 
   useEffect(() => {
     getData();
-  });
+  }, []);
 
   const handlePageChange = (event: { selected: number }) => {
     setPage(event.selected + 1);
