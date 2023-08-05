@@ -43,6 +43,7 @@ export const FilterForm = (props: {
         >
           {inputs.map((field) => (
             <FilterInput
+              key={field.id}
               label={field.label}
               id={field.id}
               placeholder={field.placeholder}
@@ -54,6 +55,7 @@ export const FilterForm = (props: {
 
           {selects.map((field) => (
             <FilterDropdown
+              key={field.id}
               label={field.label}
               id={field.id}
               placeholder={field.placeholder}
